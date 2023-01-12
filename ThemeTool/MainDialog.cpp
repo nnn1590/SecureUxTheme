@@ -627,7 +627,7 @@ void MainDialog::SelectTheme(int id)
     return;
   }
 
-  CComPtr<ITheme> pTheme = nullptr;
+  ComPtr<ITheme> pTheme = nullptr;
   auto result = g_pThemeManager2->GetTheme(id, &pTheme);
   if (FAILED(result))
   {
@@ -670,7 +670,7 @@ HRESULT MainDialog::PatchThemeInternal(int id)
   std::wstring style;
 
   {
-    CComPtr<ITheme> pTheme = nullptr;
+    ComPtr<ITheme> pTheme = nullptr;
     auto result = g_pThemeManager2->GetTheme(id, &pTheme);
     if (SUCCEEDED(result))
     {

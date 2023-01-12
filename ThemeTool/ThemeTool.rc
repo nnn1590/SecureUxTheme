@@ -18,6 +18,10 @@
 #undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
+// Application manifest
+CREATEPROCESS_MANIFEST_RESOURCE_ID RT_MANIFEST "WindowsManifest.xml"
+
+/////////////////////////////////////////////////////////////////////////////
 // English (United States) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
@@ -35,7 +39,9 @@ IDR_SECUREUXTHEME_DLL_X86 256                     "../bin/Debug/Win32/SecureUxTh
 
 IDR_SECUREUXTHEME_DLL_X64 256                     "../bin/Debug/x64/SecureUxTheme.dll"
 
+#ifndef DISABLE_ARM64
 IDR_SECUREUXTHEME_DLL_ARM64 256                     "../bin/Debug/ARM64/SecureUxTheme.dll"
+#endif
 
 #else
 
@@ -43,7 +49,9 @@ IDR_SECUREUXTHEME_DLL_X86 256                     "../bin/Release/Win32/SecureUx
 
 IDR_SECUREUXTHEME_DLL_X64 256                     "../bin/Release/x64/SecureUxTheme.dll"
 
+#ifndef DISABLE_ARM64
 IDR_SECUREUXTHEME_DLL_ARM64 256                     "../bin/Release/ARM64/SecureUxTheme.dll"
+#endif
 
 #endif
 

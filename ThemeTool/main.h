@@ -18,4 +18,4 @@
 #include "interfaces.h"
 
 extern HINSTANCE g_instance;
-extern CComPtr<IThemeManager2> g_pThemeManager2;
+extern ComPtr<IThemeManager2> g_pThemeManager2;

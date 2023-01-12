@@ -14,6 +14,13 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+#ifndef EXTERN_C_START
+#define EXTERN_C_START extern "C" {
+#endif
+#ifndef EXTERN_C_END
+#define EXTERN_C_END }
+#endif
+
 #ifndef _NO_CRT_STDIO_INLINE
 #define _NO_CRT_STDIO_INLINE 1
 #endif
@@ -36,7 +43,7 @@
 #define WIN32_NO_STATUS
 #include <windows.h>
 #include <winternl.h>
-#include <WinCrypt.h>
+#include <wincrypt.h>
 #include <delayloadhandler.h>
 
 // See AVRF.md to get how this thing works
@@ -51,6 +58,7 @@ using RTL_VERIFIER_DLL_LOAD_CALLBACK = VOID(NTAPI *) (PWSTR DllName, PVOID DllBa
 using RTL_VERIFIER_DLL_UNLOAD_CALLBACK = VOID(NTAPI *) (PWSTR DllName, PVOID DllBase, SIZE_T DllSize, PVOID Reserved);
 using RTL_VERIFIER_NTDLLHEAPFREE_CALLBACK = VOID(NTAPI *) (PVOID AllocationBase, SIZE_T AllocationSize);
 
+#ifndef __MINGW32__
 typedef struct _RTL_VERIFIER_THUNK_DESCRIPTOR {
   PCSTR ThunkName;
   PVOID ThunkOldAddress;
@@ -77,6 +85,7 @@ typedef struct _RTL_VERIFIER_PROVIDER_DESCRIPTOR {
   PVOID   RtlpDebugPageHeapDestroy;
   RTL_VERIFIER_NTDLLHEAPFREE_CALLBACK ProviderNtdllHeapFreeCallback;
 } RTL_VERIFIER_PROVIDER_DESCRIPTOR, *PRTL_VERIFIER_PROVIDER_DESCRIPTOR;
+#endif
 
 NTSYSAPI
 NTSTATUS
@@ -198,7 +207,7 @@ EXTERN_C_END
 #include <algorithm>
 
 #if defined(_DEBUG)
-#	define DebugPrint(str, ...) DbgPrintEx((ULONG)101u, 3u, "[SecureUxTheme] " __FUNCTION__ ": " str, ## __VA_ARGS__)
+#	define DebugPrint(str, ...) DbgPrintEx((ULONG)101u, 3u, "[SecureUxTheme] %s: " str, __FUNCTION__, ## __VA_ARGS__)
 #else
 #	define DebugPrint(str, ...)
 #endif

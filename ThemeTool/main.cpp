@@ -21,14 +21,6 @@
 #include "MainDialog.h"
 #include "utl.h"
 
-#pragma comment(linker, \
-  "\"/manifestdependency:type='Win32' "\
-  "name='Microsoft.Windows.Common-Controls' "\
-  "version='6.0.0.0' "\
-  "processorArchitecture='*' "\
-  "publicKeyToken='6595b64144ccf1df' "\
-  "language='*'\"")
-
 #pragma comment(lib, "ComCtl32.lib")
 #pragma comment(lib, "Advapi32.lib")
 #pragma comment(lib, "Wtsapi32.lib")
@@ -52,7 +44,7 @@ LdrEnumerateLoadedModules(
 );
 
 HINSTANCE g_instance;
-CComPtr<IThemeManager2> g_pThemeManager2;
+ComPtr<IThemeManager2> g_pThemeManager2;
 
 static int main_gui(int nCmdShow)
 {
@@ -71,7 +63,9 @@ static int main_gui(int nCmdShow)
   if (FAILED(hr))
     return POST_ERROR(ESTRt(L"CoInitialize failed, hr = %08X"), hr);
 
-  hr = g_pThemeManager2.CoCreateInstance(CLSID_ThemeManager2);
+  // IID_PPV_ARGS causes "undefined reference to `_GUID const& __mingw_uuidof<IThemeManager2>()'" linker error
+  // So, use IID_PPV_ARGS_Helper directly
+  hr = CoCreateInstance(CLSID_ThemeManager2, NULL, CLSCTX_ALL, IID_IThemeManager2, IID_PPV_ARGS_Helper(g_pThemeManager2.GetAddressOf()));
   if (FAILED(hr))
     return POST_ERROR(ESTRt(L"CoCreateInstance failed, hr = %08X"), hr);
 
@@ -99,7 +93,7 @@ static int main_gui(int nCmdShow)
       _In_ PLDR_DATA_TABLE_ENTRY ModuleInformation,
       _In_ PVOID Parameter,
       _Out_ BOOLEAN* Stop
-      )
+      ) __attribute__((stdcall))
     {
       *Stop = FALSE;
       if (const auto pfn = GetProcAddress((HMODULE)ModuleInformation->DllBase, ESTRt("CryptVerifySignatureW")))

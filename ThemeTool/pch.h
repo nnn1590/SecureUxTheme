@@ -22,12 +22,14 @@
 
 #include <windows.h>
 #include <windowsx.h>
-#include <CommCtrl.h>
-#include <atlbase.h>
+#include <commctrl.h>
+#include <oleauto.h>
 #include <shellapi.h>
 #include <winternl.h>
 #include <wtsapi32.h>
-#include <Psapi.h>
+#include <psapi.h>
+#include <tchar.h>
+#include <wrl.h>
 
 #include <tuple>
 #include <list>
@@ -38,3 +40,26 @@
 #include <random>
 
 #include "stringencrypt.h"
+
+using Microsoft::WRL::ComPtr;
+
+#ifndef EXTERN_C_START
+#define EXTERN_C_START extern "C" {
+#endif
+#ifndef EXTERN_C_END
+#define EXTERN_C_END }
+#endif
+
+#ifdef __MINGW32__
+// From mingw-w64/mingw-w64-crt/crt/pesect.c, Public Domain
+#if defined (_WIN64) && defined (__ia64__)
+#error FIXME: Unsupported __ImageBase implementation.
+#else
+#ifdef __GNUC__
+/* Hack, for bug in ld.  Will be removed soon.  */
+#define __ImageBase __MINGW_LSYMBOL(_image_base__)
+#endif
+/* This symbol is defined by the linker.  */
+extern IMAGE_DOS_HEADER __ImageBase;
+#endif
+#endif
