@@ -6,11 +6,13 @@
 #define IDR_SECUREUXTHEME_DLL_X86       110
 #define IDR_SECUREUXTHEME_DLL_X64       111
 #define IDR_SECUREUXTHEME_DLL_ARM64     112
+#define IDI_ICON1                       129
 #define IDC_CHECK_IGNORE_BACKGROUND     1002
 #define IDC_CHECK_IGNORE_CURSOR         1003
 #define IDC_CHECK_IGNORE_DESKTOP_ICONS  1004
 #define IDC_CHECK_IGNORE_COLOR          1005
 #define IDC_CHECK_IGNORE_SOUND          1006
+#define IDC_CHECK_IGNORE_SCREENSAVER    1007
 #define IDC_STATIC_STYLE                1010
 #define IDC_BUTTON_APPLY                1012
 #define IDC_LIST                        1013
@@ -38,7 +40,7 @@
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NO_MFC                     1
-#define _APS_NEXT_RESOURCE_VALUE        129
+#define _APS_NEXT_RESOURCE_VALUE        130
 #define _APS_NEXT_COMMAND_VALUE         32771
 #define _APS_NEXT_CONTROL_VALUE         1033
 #define _APS_NEXT_SYMED_VALUE           113

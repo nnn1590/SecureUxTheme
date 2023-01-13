@@ -547,6 +547,17 @@ MainDialog::MainDialog(HWND hDlg, void*)
 
   Log(ESTRt(L"Session user: %s Process user: %s"), _session_user.second.c_str(), _process_user.second.c_str());
 
+  auto hicon = (HICON)LoadImageW(
+    utl::get_instance(),
+    MAKEINTRESOURCEW(IDI_ICON1),
+    IMAGE_ICON,
+    0,
+    0,
+    LR_DEFAULTCOLOR | LR_DEFAULTSIZE
+  );
+  SendMessageW(_hwnd, WM_SETICON, ICON_SMALL, (LPARAM)hicon);
+  SendMessageW(_hwnd, WM_SETICON, ICON_BIG, (LPARAM)hicon);
+
   Static_SetText(_hwnd_STATIC_ASADMIN, PatcherStateText(_is_elevated ? PatcherState::Yes : PatcherState::No));
 
   Button_SetCheck(_hwnd_CHECK_COLORS, BST_CHECKED);
@@ -642,6 +653,13 @@ void MainDialog::SelectTheme(int id)
   {
     Static_SetText(_hwnd_STATIC_STYLE, _T(""));
     Log(ESTRt(L"SelectTheme: pTheme->GetVisualStyle failed with %08X"), result);
+    if ((uint32_t)result == (uint32_t)0x80070002)
+      utl::FormattedMessageBox(
+        _hwnd,
+        ESTRt(L"Warning"),
+        MB_OK | MB_ICONWARNING,
+        ESTRt(L"Getting visual style path failed!\n\nThis is often caused by incorrectly installed themes. Please make sure you copied all files and folders from the theme distribution before opening an issue.")
+      );
     return;
   }
 
@@ -789,6 +807,7 @@ Are you sure you want to continue?)")
   CHECK_FLAG(IGNORE_DESKTOP_ICONS);
   CHECK_FLAG(IGNORE_COLOR);
   CHECK_FLAG(IGNORE_SOUND);
+  CHECK_FLAG(IGNORE_SCREENSAVER);
 
 #undef CHECK_FLAG
 
@@ -840,6 +859,9 @@ void MainDialog::PatchTheme(int id)
       _is_elevated ? ESTRt(L"Consider sending a bug report") : ESTRt(L"Try running the program as Administrator")
     );
   }
+
+  // reload theme details (patch status)
+  SelectTheme(id);
 }
 
 int MainDialog::CurrentSelection()
@@ -916,10 +938,14 @@ INT_PTR MainDialog::DlgProc(UINT uMsg, WPARAM wParam, LPARAM lParam)
   case WM_NOTIFY:
     {
     const auto nmhdr = (LPNMHDR)lParam;
-    if (nmhdr->idFrom == IDC_LIST && nmhdr->code == NM_CLICK)
+    if (nmhdr->idFrom == IDC_LIST && nmhdr->code == LVN_ITEMCHANGED)
     {
-      SelectTheme(CurrentSelection());
-      return TRUE;
+      const auto pnmv = (LPNMLISTVIEW)lParam;
+      if (pnmv->uNewState & LVIS_SELECTED)
+      {
+        SelectTheme(pnmv->iItem);
+        return TRUE;
+      }
     }
     }
     return FALSE;

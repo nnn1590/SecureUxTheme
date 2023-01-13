@@ -67,7 +67,11 @@ static int main_gui(int nCmdShow)
   // So, use IID_PPV_ARGS_Helper directly
   hr = CoCreateInstance(CLSID_ThemeManager2, NULL, CLSCTX_ALL, IID_IThemeManager2, IID_PPV_ARGS_Helper(g_pThemeManager2.GetAddressOf()));
   if (FAILED(hr))
+  {
+    if ((uint32_t)hr == (uint32_t)0x80040154)
+      return POST_ERROR(ESTRt(L"CoCreateInstance failed, hr = %08X.\n\nThis is usually caused by corrupted files. Make sure you don't have any other theme patcher installed, and check for corrupted files with sfc /scannow"), hr);
     return POST_ERROR(ESTRt(L"CoCreateInstance failed, hr = %08X"), hr);
+  }
 
   hr = g_pThemeManager2->Init(ThemeInitNoFlags);
   if (FAILED(hr))
