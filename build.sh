@@ -14,20 +14,27 @@ done
 if [[ ${showHelp} == 1 ]]; then
 	echo "Usage: ${0:-build.sh} [option]"
 	cat << 'EOF'
-Build SecureUxTheme(.dll).
+Build SecureUxTheme and ThemeTool.
 
 Options:
-	clean, --clean		Delete ../bin/(Debug|Release)/(Win32|x64)/SecureUxTheme.dll
+	clean, --clean		Delete bin/ and obj/ directories
 	help,  --help 		Show this usage and eixt
 	--            		Stop parsing arguments
 EOF
 	exit
 fi
 
-[[ ${doClean} == 1 ]] && echo Cleaning...
+if [[ ${doClean} == 1 ]]; then
+	echo Cleaning...
+	rm -rf "./bin/" "./obj/"
+	exit $?
+fi
 
-declare -r BIN=SecureUxTheme.dll
+cd SecureUxTheme
+	./build.sh
+cd ..
 
+cd ThemeTool
 declare -Ar TARGET_ARCH=(
 	[ia32]=i686-w64-mingw32
 	[amd64]=x86_64-w64-mingw32
@@ -42,16 +49,14 @@ declare -Ar OUTDIR_ISDEBUG=(
 	[1]=Debug
 )
 
-declare outdir
+declare outdir objdir
 
-for ARCH in ia32 amd64; do
+# ThemeTool only supports x86 builds
+for ARCH in ia32; do
 	for DEBUG in 0 1; do
 		outdir="../bin/${OUTDIR_ISDEBUG[${DEBUG}]}/${OUTDIR_ARCH[${ARCH}]}"
-		if [[ ${doClean} == 1 ]]; then
-			rm -f "${outdir}/${BIN}"
-		else
-			mkdir -p "${outdir}"
-			make TARGET="${TARGET_ARCH[${ARCH}]}" DEBUG="${DEBUG}" OUTPUT="${outdir}/${BIN}"
-		fi
+		objdir="../obj/${OUTDIR_ISDEBUG[${DEBUG}]}/${OUTDIR_ARCH[${ARCH}]}/SecureUxTheme"
+		mkdir -p "${outdir}" "${objdir}"
+		make TARGET="${TARGET_ARCH[${ARCH}]}" DEBUG="${DEBUG}" BIN="${outdir}" OBJ="${objdir}"
 	done
 done

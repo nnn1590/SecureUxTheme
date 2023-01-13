@@ -1,6 +1,6 @@
 TARGET := x86_64-w64-mingw32
 CXX := $(TARGET)-g++
-OUTPUT := avrf.dll
+OUTPUT := SecureUxTheme.dll
 DEBUG := 0
 
 .PHONY: all clean

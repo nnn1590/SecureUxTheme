@@ -8,7 +8,7 @@ OBJ := obj
 BIN := bin
 SRC := .
 RES := res
-OUTPUT := bin/ThemeTool.exe
+OUTPUT := $(BIN)/ThemeTool.exe
 
 .PHONY: all
 all: $(BIN) $(OBJ) $(OUTPUT)
