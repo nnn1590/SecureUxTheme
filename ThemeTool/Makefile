@@ -2,6 +2,8 @@ TARGET := i686-w64-mingw32
 CXX := $(TARGET)-g++
 WINDRES := $(TARGET)-windres
 CXXFLAGS := -fPIE -municode -DCI_VERSION="\"(unknown)\"" -DUNICODE -D_UNICODE -mwindows -static-libgcc -static-libstdc++
+DEBUGCXXFLAGS := -g -D_DEBUG
+RELEASECXXFLAGS := -O2 -DNDEBUG
 LDFLAGS := $(CXXFLAGS) -ladvapi32 -lcomctl32 -lwtsapi32 -lole32 -loleaut32 -lntdll
 WINDRESFLAGS := -DDISABLE_ARM64
 OBJ := obj
@@ -9,6 +11,12 @@ BIN := bin
 SRC := .
 RES := res
 OUTPUT := $(BIN)/ThemeTool.exe
+DEBUG := 0
+ifeq ($(DEBUG),1)
+	CXXFLAGS := $(CXXFLAGS) $(DEBUGCXXFLAGS)
+else
+	CXXFLAGS := $(CXXFLAGS) $(RELEASECXXFLAGS)
+endif
 
 .PHONY: all
 all: $(BIN) $(OBJ) $(OUTPUT)
