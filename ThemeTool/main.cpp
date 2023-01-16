@@ -93,7 +93,7 @@ static int main_gui(int nCmdShow)
       _In_ PLDR_DATA_TABLE_ENTRY ModuleInformation,
       _In_ PVOID Parameter,
       _Out_ BOOLEAN* Stop
-      ) __attribute__((stdcall))
+      ) LAMBDA_STDCALL
     {
       *Stop = FALSE;
       if (const auto pfn = GetProcAddress((HMODULE)ModuleInformation->DllBase, ESTRt("CryptVerifySignatureW")))

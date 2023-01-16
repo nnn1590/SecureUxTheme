@@ -50,6 +50,12 @@ using Microsoft::WRL::ComPtr;
 #define EXTERN_C_END }
 #endif
 
+#ifdef _MSC_VER
+#define LAMBDA_STDCALL
+#else
+#define LAMBDA_STDCALL __stdcall
+#endif
+
 #ifdef __MINGW32__
 // From mingw-w64/mingw-w64-crt/crt/pesect.c, Public Domain
 #if defined (_WIN64) && defined (__ia64__)
